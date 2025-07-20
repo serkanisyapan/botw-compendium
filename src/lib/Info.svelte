@@ -3,7 +3,7 @@
 </script>
 
 <article class="info">
-    <p>{info_title}</p>
+    <p class="info_title">{info_title}</p>
     <ul>
         {#each info_data as data}
         <li>{data}</li>
@@ -18,6 +18,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+.info_title {
+    font-weight: bold;
 }
 ul {
     list-style-type: none; 

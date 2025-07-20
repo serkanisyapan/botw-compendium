@@ -23,7 +23,14 @@
         <a onclick={() => selected_category = null} href="/"><p class="sidebar_title">BoTW: Compendium</p></a>
         <ul class="category_list">
             {#each category_data as {category_image, category_name}}
-                <a onclick={() => selected_category = category_name} aria-current={selected_category === category_name} class="category_card" href="/category/{category_name}"><img class="category_image" src="{category_image}" alt="{category_name}"/>{category_name.toUpperCase()}</a>
+                <a 
+                onclick={() => selected_category = category_name} 
+                aria-current={selected_category === category_name} 
+                class="category_card" 
+                href="/category/{category_name}"
+                >
+                    <img class="category_image" src="{category_image}" alt="{category_name}"/>{category_name.toUpperCase()}
+                </a>
             {/each}
         </ul>
     </aside>
@@ -44,9 +51,8 @@
     }
     .main-content {
         flex: 1;
-        display: flex;
         text-align: center;
-        padding: 24px 60px;
+        padding: 24px 40px;
     }
     .sidebar_title {
         margin-left: 40px;
@@ -66,8 +72,8 @@
         align-items: center;
     }
     .category_image {
-        border-radius: 50%;
-        width: 40px;
+        width: 35px;
+        height: 35px;
     }
     a {
         text-decoration: none;

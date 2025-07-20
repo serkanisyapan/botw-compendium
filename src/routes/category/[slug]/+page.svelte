@@ -6,14 +6,15 @@
 
 <div class="category_page">
     <section class="category_items">
-        {#each data.category_data as {category, common_locations, image, name, id, drops, cooking_effect}}
+        <!-- giving (id) to the each loop fixes the stale data between page change -->
+        {#each data.category_data as {description, category, common_locations, image, name, id, drops, cooking_effect, hearts_recovered, edible, properties} (id)}
             <article class="category_item">
                 <span class="item_id">{id}</span>
                 <figure>
                     <img loading="lazy" src="{image}" alt="{name}"/>
                     <figcaption>{name}</figcaption>
                 </figure>
-                <ItemInfo {common_locations} {drops} {category} {cooking_effect}/>
+                <ItemInfo {common_locations} {drops} {category} {cooking_effect} {hearts_recovered} {edible} {properties}/>
             </article>
         {/each}
     </section>
@@ -37,10 +38,6 @@
         border: 1px solid #d1c7b7; /* Subtle border */
         position: relative;
     }
-    .category_item:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 20px rgba(60, 50, 40, 0.4);
-    }
     .item_id {
         position: absolute;
         top: 0.4rem;
@@ -48,12 +45,6 @@
         padding: 0.1rem 0.4rem;
         font-size: 0.8rem;
     }
-    /*.item_description {
-        width: 70%;
-        height: 80%;
-        font-size: 18px;
-        color: #555;
-    }*/
     figure {
         display: flex;
         flex-flow: column;
