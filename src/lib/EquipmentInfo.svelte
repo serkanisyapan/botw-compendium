@@ -2,25 +2,38 @@
     let { attack, defense } = $props();
 </script>
 
-<div class="equipment_info">
-    <p>PROPERTIES</p>
-    <span><img src="/sword.png" alt="sword_image"/>{attack}</span>
-    <span><img src="/shield.png" alt="shield_image"/>{defense}</span>
+<div>
+    <p class="title">PROPERTIES</p>
+    <div class="equipment_info">
+        <div class="equipment_images">
+            <img src="/sword.png" alt="sword_image"/>
+            <img src="/shield.png" alt="shield_image"/>
+        </div>
+        <div class="equipment_values">
+            <span>{attack}</span>
+            <span>{defense}</span>
+        </div>
+    </div>
 </div>
 
 <style>
     .equipment_info {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
+        gap: 5px;
     }
-    p {
-        font-weight: bold;
-    }
-    span {
+    .equipment_images {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+    }
+    .equipment_values {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .title {
+        font-weight: bold;
     }
     img {
         width: 36px;
