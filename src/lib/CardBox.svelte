@@ -38,7 +38,7 @@ function toggle_card_flip(card_id: number) {
 		perspective: 1000px; /* Remove this if you don't want the 3D effect */
         cursor: pointer;
         flex: 0 1 320px;
-        max-width: 320px
+        max-width: 340px
 	}
 
 	.card_box_inner {

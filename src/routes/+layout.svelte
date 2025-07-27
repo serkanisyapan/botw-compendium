@@ -5,26 +5,18 @@
 	import { goto } from '$app/navigation';
     import type { CategoryData as EntryData } from "../routes/category/[slug]/category.d.ts"
 	import CardBox from '$lib/CardBox.svelte';
-	import { onMount } from 'svelte';
 
     interface CategoryData {
         category_name: string,
         category_image: string
     }
 
-    let { children } = $props();
+    let { data, children } = $props();
     let selected_category = $state(page.url.pathname.split("/")[2] || null)
     let search_entry = $state("")
-    let search_entry_error = $state("")
-    let entry_data: EntryData | null = $state(null)
+    let search_entry_error = $state(data.error || "")
+    let entry_data: EntryData | null = $state(data.entry_data || null)
     let loading_entry = $state(false)
-
-    onMount(() => {
-        if (page.url.search) {
-            let search_entry_param = page.url.search.split("=")[1];
-            fetch_entry(search_entry_param);
-        }
-    })
 
     const category_data:CategoryData[] = [
         {category_name: "creatures", category_image: "/creatures.png"},
