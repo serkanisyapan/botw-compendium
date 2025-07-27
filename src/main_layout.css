@@ -1,0 +1,55 @@
+.layout {
+    display: flex;
+    background-color: #e6e0d4;
+}
+.sidebar {
+    min-width: 250px;
+    flex-shrink: 0;
+}
+.main-content {
+    flex: 1;
+    text-align: center;
+    padding: 24px 55px;
+}
+.sidebar_title {
+    margin-left: 40px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+}
+.category_list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    gap:15px;
+}
+.category_card {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.category_image {
+    width: 35px;
+    height: 35px;
+}
+.search_section {
+    margin-top: 30px;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+a[aria-current="true"] {
+    color: #3c352f;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+input {
+    box-sizing: border-box;
+    margin-left: 40px;
+    padding: 5px;
+}
+button {
+    padding: 5px;
+}

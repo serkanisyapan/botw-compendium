@@ -1,8 +1,11 @@
 <script lang="ts">
     import '../reset.css'
+    import '../main_layout.css'
     import { page } from "$app/state"
+	import { goto } from '$app/navigation';
     import type { CategoryData as EntryData } from "../routes/category/[slug]/category.d.ts"
 	import CardBox from '$lib/CardBox.svelte';
+	import { onMount } from 'svelte';
 
     interface CategoryData {
         category_name: string,
@@ -11,9 +14,17 @@
 
     let { children } = $props();
     let selected_category = $state(page.url.pathname.split("/")[2] || null)
-    let search_entry = $state("") 
+    let search_entry = $state("")
     let search_entry_error = $state("")
     let entry_data: EntryData | null = $state(null)
+    let loading_entry = $state(false)
+
+    onMount(() => {
+        if (page.url.search) {
+            let search_entry_param = page.url.search.split("=")[1];
+            fetch_entry(search_entry_param);
+        }
+    })
 
     const category_data:CategoryData[] = [
         {category_name: "creatures", category_image: "/creatures.png"},
@@ -24,16 +35,33 @@
     ]
 
     async function fetch_entry(search_entry: string) {
+        if (Number(search_entry) === entry_data?.id || search_entry === entry_data?.name) return;
+        loading_entry = true;
         let entry_endpoint = await fetch(`https://botw-compendium.herokuapp.com/api/v3/compendium/entry/${search_entry}`)
         let { data } = await entry_endpoint.json();
 
         if (Object.keys(data).length === 0) {
+            loading_entry = false;
             search_entry_error = "This entry does not exist."
+            let error_timeout = setTimeout(() => {
+                search_entry_error = ""
+                loading_entry = false;
+                clearTimeout(error_timeout);
+            }, 2000);
             return;
         }
         entry_data = data
-
+        search_entry_error = ""
+        loading_entry = false
     }
+
+    function handle_search_entry(event: Event) {
+        event.preventDefault();
+        fetch_entry(search_entry);
+        goto(`/?search_entry=${search_entry}`, { replaceState: true });
+        search_entry = "";
+    }
+
 </script>
 
 <div class="layout">
@@ -61,13 +89,13 @@
             {/each}
         </ul>
 
-        <section class="search_section">
-            <input id="search_entry" name="search_entry" type="text" placeholder="search entry by id or name" bind:value={search_entry}/>
-            <button onclick={() => {
-                fetch_entry(search_entry)
-                search_entry = ""
-            }} aria-label="search_entry" name="search_entry" id="search_entry">Search</button>
-        </section>
+        <form onsubmit={handle_search_entry} class="search_section">
+            <input disabled={loading_entry} id="search_entry" placeholder="search entry by id or name" bind:value={search_entry}/>
+            <button type="submit" disabled={loading_entry} name="search_entry">Search</button>
+            {#if search_entry_error}
+                <p style="margin-left: 40px;">{search_entry_error}</p>
+            {/if}
+        </form>
     </aside>
 
     <main class="main-content">
@@ -90,61 +118,3 @@
         {/if}
     </main>
 </div>
-
-<style>
-    .layout {
-        display: flex;
-        background-color: #e6e0d4;
-    }
-    .sidebar {
-        min-width: 250px;
-        flex-shrink: 0;
-    }
-    .main-content {
-        flex: 1;
-        text-align: center;
-        padding: 24px 55px;
-    }
-    .sidebar_title {
-        margin-left: 40px;
-        font-size: 1.5em;
-        font-weight: bold;
-        color: black;
-    }
-    .category_list {
-        display: flex;
-        flex-direction: column;
-        list-style-type: none;
-        gap:15px;
-    }
-    .category_card {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-    .category_image {
-        width: 35px;
-        height: 35px;
-    }
-    .search_section {
-        margin-top: 30px;
-    }
-    a {
-        text-decoration: none;
-        color: black;
-    }
-    a[aria-current="true"] {
-        color: #3c352f;
-        font-weight: bold;
-        text-decoration: none;
-        transition: all 0.2s ease-in-out;
-    }
-    input {
-        box-sizing: border-box;
-        margin-left: 40px;
-        padding: 5px;
-    }
-    button {
-        padding: 5px;
-    }
-</style>

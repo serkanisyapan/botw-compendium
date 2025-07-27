@@ -31,6 +31,6 @@
     .category_items{
         display: flex;
         flex-wrap: wrap;
-        gap: 2em;
+        gap: 15px;
     }
 </style>

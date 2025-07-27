@@ -18,10 +18,9 @@ function toggle_card_flip(card_id: number) {
 <div onclick={() => toggle_card_flip(id)} class="card_box">
     <div class="card_box_inner {selected_card === id ? "show_back" : ""}">
         <div class="card_box_front card">
-            <span class="item_id">{id}</span>
             <figure>
                 <img loading="lazy" src="{image}" alt="{name}"/>
-                <figcaption>{name}</figcaption>
+                <figcaption>{name} ({id})</figcaption>
             </figure>
             <ItemInfo {common_locations} {drops} {category} {cooking_effect} {hearts_recovered} {edible} {properties}/>
         </div>
@@ -38,8 +37,8 @@ function toggle_card_flip(card_id: number) {
 		background-color: transparent;
 		perspective: 1000px; /* Remove this if you don't want the 3D effect */
         cursor: pointer;
-        flex: 0 1 350px;
-        max-width: 350px;
+        flex: 0 1 320px;
+        max-width: 320px
 	}
 
 	.card_box_inner {
@@ -84,14 +83,6 @@ function toggle_card_flip(card_id: number) {
 		transform: rotateY(180deg)
 	}
 
-    .item_id {
-        position: absolute;
-        top: 0.4rem;
-        right: 0.4rem;
-        padding: 0.1rem 0.4rem;
-        font-size: 0.8rem;
-    }
-
     .description_title {
         font-weight: bold;
         font-size: 24px;
@@ -108,7 +99,7 @@ function toggle_card_flip(card_id: number) {
     }
 
     img {
-        width: 250px;
+        width: 200px;
     }
 
     figcaption {
