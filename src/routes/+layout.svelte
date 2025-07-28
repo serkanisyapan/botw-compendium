@@ -15,6 +15,7 @@
     let selected_category = $state(page.url.pathname.split("/")[2] || null)
     let search_entry = $state("")
     let search_entry_error = $state(data.error || "")
+    let search_entry_game = $state(data.entry_game || "botw")
     let entry_data: EntryData | null = $state(data.entry_data || null)
     let loading_entry = $state(false)
 
@@ -27,9 +28,8 @@
     ]
 
     async function fetch_entry(search_entry: string) {
-        if (Number(search_entry) === entry_data?.id || search_entry === entry_data?.name) return;
         loading_entry = true;
-        let entry_endpoint = await fetch(`https://botw-compendium.herokuapp.com/api/v3/compendium/entry/${search_entry}`)
+        let entry_endpoint = await fetch(`https://botw-compendium.herokuapp.com/api/v3/compendium/entry/${search_entry+`?game=${search_entry_game}`}`)
         let { data } = await entry_endpoint.json();
 
         if (Object.keys(data).length === 0) {
@@ -50,22 +50,17 @@
     function handle_search_entry(event: Event) {
         event.preventDefault();
         fetch_entry(search_entry);
-        goto(`/?search_entry=${search_entry}`, { replaceState: true });
+        goto(`/?search_entry=${search_entry}&game=${search_entry_game}`, { replaceState: true });
         search_entry = "";
     }
 
 </script>
 
-<div class="layout">
-
-    <aside class="sidebar">
-        <a onclick={() => {
-            selected_category = null
-            entry_data = null
-            search_entry = ""
-        }} href="/"><p class="sidebar_title">BoTW: Compendium</p></a>
+{#snippet category_list(name: string, list:CategoryData[])}
+    <details name="game_type">
+        <summary>{name}</summary>
         <ul class="category_list">
-            {#each category_data as {category_image, category_name}}
+            {#each list as {category_image, category_name}}
                 <a 
                 onclick={() => {
                     selected_category = category_name
@@ -74,20 +69,43 @@
                 }} 
                 aria-current={selected_category === category_name} 
                 class="category_card" 
-                href="/category/{category_name}"
+                href="/category/{category_name+"?game=botw"}"
                 >
                     <img class="category_image" src="{category_image}" alt="{category_name}"/>{category_name.toUpperCase()}
                 </a>
             {/each}
         </ul>
+    </details>
+{/snippet}
+
+<div class="layout">
+    <aside class="sidebar">
+        <a onclick={() => {
+            selected_category = null
+            entry_data = null
+            search_entry = ""
+        }} href="/"
+        >
+            <p class="sidebar_title">ZELDA: Compendium</p>
+        </a>
+
+        {@render category_list("Breath of The Wild", category_data)}
+        {@render category_list("Tears of The Kingdom", category_data)}
 
         <form onsubmit={handle_search_entry} class="search_section">
-            <input disabled={loading_entry} id="search_entry" placeholder="search entry by id or name" bind:value={search_entry}/>
+            <div class="input_wrapper">
+                <input disabled={loading_entry} id="search_entry" placeholder="search entry" bind:value={search_entry}/>
+                <select bind:value={search_entry_game} disabled={loading_entry}>
+                    <option value="botw">botw</option>
+                    <option value="totk">totk</option>
+                </select>
+            </div>
             <button type="submit" disabled={loading_entry} name="search_entry">Search</button>
-            {#if search_entry_error}
-                <p style="margin-left: 40px;">{search_entry_error}</p>
-            {/if}
         </form>
+        {#if search_entry_error}
+            <p style="margin-left: 40px;">{search_entry_error}</p>
+        {/if}
+
     </aside>
 
     <main class="main-content">
