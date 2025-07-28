@@ -56,7 +56,7 @@
 
 </script>
 
-{#snippet category_list(name: string, list:CategoryData[])}
+{#snippet category_list(name: string, game:string, list:CategoryData[])}
     <details name="game_type">
         <summary>{name}</summary>
         <ul class="category_list">
@@ -69,7 +69,7 @@
                 }} 
                 aria-current={selected_category === category_name} 
                 class="category_card" 
-                href="/category/{category_name+"?game=botw"}"
+                href="/category/{category_name+"?game="+game}"
                 >
                     <img class="category_image" src="{category_image}" alt="{category_name}"/>{category_name.toUpperCase()}
                 </a>
@@ -89,8 +89,8 @@
             <p class="sidebar_title">ZELDA: Compendium</p>
         </a>
 
-        {@render category_list("Breath of The Wild", category_data)}
-        {@render category_list("Tears of The Kingdom", category_data)}
+        {@render category_list("Breath of The Wild", "botw", category_data)}
+        {@render category_list("Tears of The Kingdom", "totk", category_data)}
 
         <form onsubmit={handle_search_entry} class="search_section">
             <div class="input_wrapper">
