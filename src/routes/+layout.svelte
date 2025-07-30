@@ -67,7 +67,7 @@
                     entry_data = null
                     search_entry = ""
                 }} 
-                aria-current={selected_category === category_name} 
+                aria-current={game === page.url.search.split('=')[1] && selected_category === category_name} 
                 class="category_card" 
                 href="/category/{category_name+"?game="+game}"
                 >
@@ -86,7 +86,7 @@
             search_entry = ""
         }} href="/"
         >
-            <p class="sidebar_title">ZELDA: Compendium</p>
+            <p class="sidebar_title">Zelda Compendium</p>
         </a>
 
         {@render category_list("Breath of The Wild", "botw", category_data)}

@@ -22,6 +22,7 @@
     flex-direction: column;
     list-style-type: none;
     gap:15px;
+    padding-left: 20px;
 }
 .category_card {
     display: flex;
