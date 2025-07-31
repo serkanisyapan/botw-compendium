@@ -14,9 +14,10 @@
     let { data, children } = $props();
     let selected_category = $state(page.url.pathname.split("/")[2] || null)
     let search_entry = $state("")
-    let search_entry_error = $state(data.error || "")
-    let search_entry_game = $state(data.entry_game || "botw")
-    let entry_data: EntryData | null = $state(data.entry_data || null)
+    // using $derived instead of $state fixes re-render issue of search input not refreshing the state 
+    let search_entry_error = $derived(data.error || "")
+    let search_entry_game = $derived(data.entry_game || "botw")
+    let entry_data: EntryData | null = $derived(data.entry_data || null)
     let loading_entry = $state(false)
 
     const category_data:CategoryData[] = [
@@ -27,30 +28,10 @@
         {category_name: "treasure", category_image: "/treasure.png"},
     ]
 
-    async function fetch_entry(search_entry: string) {
-        loading_entry = true;
-        let entry_endpoint = await fetch(`https://botw-compendium.herokuapp.com/api/v3/compendium/entry/${search_entry+`?game=${search_entry_game}`}`)
-        let { data } = await entry_endpoint.json();
-
-        if (Object.keys(data).length === 0) {
-            loading_entry = false;
-            search_entry_error = "This entry does not exist."
-            let error_timeout = setTimeout(() => {
-                search_entry_error = ""
-                loading_entry = false;
-                clearTimeout(error_timeout);
-            }, 2000);
-            return;
-        }
-        entry_data = data
-        search_entry_error = ""
-        loading_entry = false
-    }
-
     function handle_search_entry(event: Event) {
         event.preventDefault();
-        fetch_entry(search_entry);
-        goto(`/?search_entry=${search_entry}&game=${search_entry_game}`, { replaceState: true });
+        loading_entry = true
+        goto(`/?search_entry=${search_entry}&game=${search_entry_game}`, { replaceState: true }).finally(() => loading_entry = false)
         search_entry = "";
     }
 
@@ -86,7 +67,7 @@
             search_entry = ""
         }} href="/"
         >
-            <p class="sidebar_title">Zelda Compendium</p>
+            <p class="sidebar_title">ZELDA: Compendium</p>
         </a>
 
         {@render category_list("Breath of The Wild", "botw", category_data)}
@@ -110,19 +91,22 @@
 
     <main class="main-content">
         {#if entry_data?.id}
-            <CardBox 
-                category={entry_data.category} 
-                common_locations={entry_data.common_locations} 
-                cooking_effect={entry_data.cooking_effect}
-                description={entry_data.description} 
-                drops={entry_data.drops} 
-                edible={entry_data.edible}
-                hearts_recovered={entry_data.hearts_recovered}
-                image={entry_data.image}
-                id={entry_data.id}
-                name={entry_data.name}
-                properties={entry_data.properties}
-            />
+            <!-- wrapping compenent in key block fixes stale state issue if ids of the items are the same (ex. heart recovered value stays same (id:66)) -->
+            {#key entry_data}
+                <CardBox 
+                    category={entry_data.category} 
+                    common_locations={entry_data.common_locations} 
+                    cooking_effect={entry_data.cooking_effect}
+                    description={entry_data.description} 
+                    drops={entry_data.drops} 
+                    edible={entry_data.edible}
+                    hearts_recovered={entry_data.hearts_recovered}
+                    image={entry_data.image}
+                    id={entry_data.id}
+                    name={entry_data.name}
+                    properties={entry_data.properties}
+                />
+            {/key}
         {:else}
             {@render children()}
         {/if}

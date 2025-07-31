@@ -10,19 +10,22 @@
     <section class="category_items">
         <!-- giving (id) to the each loop fixes the stale data between page change -->
         {#each data.category_data as {description, category, common_locations, image, name, drops, id, cooking_effect, hearts_recovered, edible, properties} (id)}
-            <CardBox 
-                {category} 
-                {common_locations} 
-                {cooking_effect} 
-                {description} 
-                {drops} 
-                {edible} 
-                {hearts_recovered} 
-                {id} 
-                {image} 
-                {name} 
-                {properties}
-            />
+            <!-- wrapping compenent in key block fixes stale state issue if ids of the items are the same (ex. heart recovered value stays same (id:66)) -->
+            {#key data.category_data}
+                <CardBox 
+                    {category} 
+                    {common_locations} 
+                    {cooking_effect} 
+                    {description} 
+                    {drops} 
+                    {edible} 
+                    {hearts_recovered} 
+                    {id} 
+                    {image} 
+                    {name} 
+                    {properties}
+                />
+            {/key}
         {/each}
     </section>
 </div>
